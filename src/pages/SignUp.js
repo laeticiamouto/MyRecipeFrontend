@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signup } from '../api';
 import styled from 'styled-components';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const FormContainer = styled.div`
   max-width: 500px;
@@ -59,10 +61,10 @@ const SignUp = () => {
 
     try {
       await signup(username, password);
-      alert('User registered successfully!');
+      toast.success('Inscription reussie !');
       navigate('/login');
     } catch (error) {
-      alert('Registration failed');
+      toast.error("Echec de l'inscription");
     }
   };
 

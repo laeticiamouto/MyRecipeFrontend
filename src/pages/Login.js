@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { login } from '../api';
 import { AuthContext } from '../components/AuthContext';
 import styled from 'styled-components';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const FormContainer = styled.div`
   max-width: 500px;
@@ -66,9 +68,10 @@ const Login = () => {
     try {
       const response = await login(username, password);
       loginContext(response.data.token);
+      toast.success('Connexion avec succes !')
       navigate('/recipes');
     } catch (error) {
-      alert('Login failed');
+      toast.error('Echec de la connexion !');
     }
   };
 
