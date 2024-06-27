@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react'
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { addRecipe } from '../api';
 import { AuthContext } from '../components/AuthContext';
@@ -31,8 +31,6 @@ const AddRecipe = () => {
   const { authToken } = useContext(AuthContext);
   const navigate = useNavigate();
 
-
-  // gestion des erreurs du formulaire
   const validate = () => {
     let formErrors = {};
 
@@ -44,11 +42,10 @@ const AddRecipe = () => {
 
     setErrors(formErrors);
 
-    return !formErrors.name && !formErrors.ingredients && formErrors.instructions && formErrors.categorie && formErrors.imageUrl;
-
+    return Object.keys(formErrors).length === 0;
   }
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validate()) {
@@ -58,18 +55,17 @@ const AddRecipe = () => {
     try {
       const response = await addRecipe(authToken, { name, ingredients, instructions, categorie, imageUrl });
       if (response.status === 201) { // Assuming 201 Created is the success status
-          toast.success('Recette ajouter avec succès!');
-          setName('');
-          navigate('/recipes'); // Redirection vers la liste des tâches après ajout
+        toast.success('Recette ajoutée avec succès!');
+        setName('');
+        navigate('/recipes'); // Redirection vers la liste des recettes après ajout
       } else {
-          toast.error('Ajout de recette impossible!');
+        toast.error('Ajout de recette impossible!');
       }
     } catch (error) {
-        toast.error('Ajout de recette impossible!');
+      toast.error('Ajout de recette impossible!');
     }
 
-    console.log('Recette ajouter avec succès!', { name, ingredients, instructions, categorie, imageUrl });
-  
+    console.log('Recette ajoutée avec succès!', { name, ingredients, instructions, categorie, imageUrl });
   }
 
   return (
@@ -88,25 +84,25 @@ const AddRecipe = () => {
           {errors.name && <ErrorText>{errors.name}</ErrorText>}
         </div>
         <div className="mb-3">
-        <label htmlFor="ingredients" className="form-label">Ingredients</label>
-        <textarea
-          className="form-control mb-3"
-          id="ingredients"
-          rows="3" 
-          value={ingredients}
-          onChange={(e) => setIngredients(e.target.value)}
-        />
+          <label htmlFor="ingredients" className="form-label">Ingrédients</label>
+          <textarea
+            className="form-control mb-3"
+            id="ingredients"
+            rows="3"
+            value={ingredients}
+            onChange={(e) => setIngredients(e.target.value)}
+          />
           {errors.ingredients && <ErrorText>{errors.ingredients}</ErrorText>}
         </div>
         <div className="mb-3">
-        <label htmlFor="instructions" className="form-label">Instructions</label>
-        <textarea
-          className="form-control mb-3"
-          id="instructions"
-          rows="3"
-          value={instructions}
-          onChange={(e) => setInstructions(e.target.value)}
-        />
+          <label htmlFor="instructions" className="form-label">Instructions</label>
+          <textarea
+            className="form-control mb-3"
+            id="instructions"
+            rows="3"
+            value={instructions}
+            onChange={(e) => setInstructions(e.target.value)}
+          />
           {errors.instructions && <ErrorText>{errors.instructions}</ErrorText>}
         </div>
         <div className="mb-3">
@@ -126,7 +122,7 @@ const AddRecipe = () => {
           {errors.categorie && <ErrorText>{errors.categorie}</ErrorText>}
         </div>
         <div className="mb-3">
-          <label htmlFor="imageUrl" className="form-label">Image url</label>
+          <label htmlFor="imageUrl" className="form-label">Image URL</label>
           <input
             type="text"
             className="form-control mb-3"
@@ -142,4 +138,4 @@ const AddRecipe = () => {
   )
 }
 
-export default AddRecipe
+export default AddRecipe;
