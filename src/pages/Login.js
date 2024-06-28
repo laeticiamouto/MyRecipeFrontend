@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../api';
 import { AuthContext } from '../components/AuthContext';
@@ -22,25 +22,20 @@ const ErrorText = styled.div`
 `;
 
 const Login = () => {
-  // gestion de l'etat
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({ username: '', password: '' });
 
-  //utilisation du contexte : acces à la fonction login de AuthContext en la renommant loginContext
   const { login: loginContext } = useContext(AuthContext);
-
-  // pour naviguer efficacement vers d'autres route
   const navigate = useNavigate();
-  
-  // gestion des erreurs du formulaire
+
   const validate = () => {
     let formErrors = {};
 
     if (!username) {
       formErrors.username = "Le nom d'utilisateur est requis.";
-    } else if(username.length < 2){
-      formErrors.username = "Le mot de passe doit contenir au moins 2 caractères."
+    } else if (username.length < 2) {
+      formErrors.username = "Le nom d'utilisateur doit contenir au moins 2 caractères.";
     } else if (!/^[a-zA-Z]+$/.test(username)) {
       formErrors.username = "Le nom d'utilisateur doit contenir uniquement des lettres.";
     }
@@ -54,10 +49,9 @@ const Login = () => {
     }
 
     setErrors(formErrors);
-
     return !formErrors.username && !formErrors.password;
-
   }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -67,46 +61,47 @@ const Login = () => {
 
     try {
       const response = await login(username, password);
-      loginContext(response.data.token);
-      toast.success('Connexion avec succes !')
+      const { token, result } = response.data;
+      loginContext(token, result.id); // Stocke le token et l'ID de l'utilisateur dans le contexte
+      toast.success('Connexion réussie !')
       navigate('/recipes');
     } catch (error) {
-      toast.error('Echec de la connexion !');
+      toast.error('Échec de la connexion !');
     }
   };
 
   return (
     <FormContainer className="mt-5">
-        <h1 className="text-center">Connexion</h1>
-        <form onSubmit={handleSubmit}>
-            <div className="mb-3">
-                <label htmlFor="username" className="form-label">Nom d'utilisateur</label>
-                <input
-                    type="text"
-                    className="form-control mb-3"
-                    id="username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    placeholder="Username"
-                />
-                {errors.username && <ErrorText>{errors.username}</ErrorText>}
-            </div>
-            <div className="mb-3">
-                <label htmlFor="password" className="form-label">Mot de passe</label>
-                <input
-                    type="text"
-                    className="form-control mb-3"
-                    id="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Password" 
-                />
-                {errors.password && <ErrorText>{errors.password}</ErrorText>}
-            </div>
-            <button type="submit" className="btn btn-primary w-100">Se connecter</button>
-        </form>
+      <h1 className="text-center">Connexion</h1>
+      <form onSubmit={handleSubmit}>
+        <div className="mb-3">
+          <label htmlFor="username" className="form-label">Nom d'utilisateur</label>
+          <input
+            type="text"
+            className="form-control mb-3"
+            id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Username"
+          />
+          {errors.username && <ErrorText>{errors.username}</ErrorText>}
+        </div>
+        <div className="mb-3">
+          <label htmlFor="password" className="form-label">Mot de passe</label>
+          <input
+            type="password"
+            className="form-control mb-3"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+          />
+          {errors.password && <ErrorText>{errors.password}</ErrorText>}
+        </div>
+        <button type="submit" className="btn btn-primary w-100">Se connecter</button>
+      </form>
     </FormContainer>
   )
 }
 
-export default Login
+export default Login;

@@ -24,11 +24,11 @@ const AddRecipe = () => {
   const [name, setName] = useState('');
   const [ingredients, setIngredients] = useState('');
   const [instructions, setInstructions] = useState('');
-  const [categorie, setCategorie] = useState('');
+  const [category, setCategory] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [errors, setErrors] = useState({});
 
-  const { authToken } = useContext(AuthContext);
+  const { authToken, userId } = useContext(AuthContext); // include userId
   const navigate = useNavigate();
 
   const validate = () => {
@@ -37,13 +37,13 @@ const AddRecipe = () => {
     if (!name) formErrors.name = 'Le nom de la recette est requis.';
     if (!ingredients) formErrors.ingredients = 'Les ingrédients sont requis.';
     if (!instructions) formErrors.instructions = 'Les instructions sont requises.';
-    if (!categorie) formErrors.categorie = 'La catégorie est requise.';
+    if (!category) formErrors.categorie = 'La catégorie est requise.';
     if (!imageUrl) formErrors.imageUrl = 'L\'URL de l\'image est requise.';
 
     setErrors(formErrors);
 
     return Object.keys(formErrors).length === 0;
-  }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -53,7 +53,8 @@ const AddRecipe = () => {
     }
 
     try {
-      const response = await addRecipe(authToken, { name, ingredients, instructions, categorie, imageUrl });
+      const response = await addRecipe(authToken, { name, ingredients, instructions, category, imageUrl, userId });
+      console.log(response)
       if (response.status === 201) { // Assuming 201 Created is the success status
         toast.success('Recette ajoutée avec succès!');
         setName('');
@@ -62,11 +63,12 @@ const AddRecipe = () => {
         toast.error('Ajout de recette impossible!');
       }
     } catch (error) {
+      console.log(error)
       toast.error('Ajout de recette impossible!');
     }
 
-    console.log('Recette ajoutée avec succès!', { name, ingredients, instructions, categorie, imageUrl });
-  }
+    console.log('Recette ajoutée avec succès!', { name, ingredients, instructions, category, imageUrl });
+  };
 
   return (
     <FormContainer className="mt-5 mb-5">
@@ -110,8 +112,8 @@ const AddRecipe = () => {
           <select
             className="form-control mb-3"
             id="categorie"
-            value={categorie}
-            onChange={(e) => setCategorie(e.target.value)}
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
           >
             <option value="">Sélectionnez une catégorie</option>
             <option value="méditérannéen">Méditérannéen</option>
@@ -135,7 +137,7 @@ const AddRecipe = () => {
         <button type="submit" className="btn btn-primary w-100">Ajouter recette</button>
       </form>
     </FormContainer>
-  )
-}
+  );
+};
 
 export default AddRecipe;

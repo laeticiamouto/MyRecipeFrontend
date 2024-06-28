@@ -2,29 +2,42 @@ import React, { createContext, useState, useEffect } from 'react';
 
 export const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
-  const [authToken, setAuthToken] = useState(localStorage.getItem('token'));
+const AuthProvider = ({ children }) => {
+  const [authToken, setAuthToken] = useState(null);
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      setAuthToken(token);
+    // Récupération de l'authToken et userId depuis localStorage lors du chargement initial de l'application
+    const storedToken = localStorage.getItem('authToken');
+    const storedUserId = localStorage.getItem('userId');
+
+    if (storedToken) {
+      setAuthToken(storedToken);
+    }
+    if (storedUserId) {
+      setUserId(storedUserId);
     }
   }, []);
 
-  const login = (token) => {
+  const login = (token, id) => {
     setAuthToken(token);
-    localStorage.setItem('token', token);
+    setUserId(id);
+    localStorage.setItem('authToken', token); // Stockage dans localStorage
+    localStorage.setItem('userId', id); // Stockage dans localStorage
   };
 
   const logout = () => {
     setAuthToken(null);
-    localStorage.removeItem('token');
+    setUserId(null);
+    localStorage.removeItem('authToken'); // Suppression depuis localStorage
+    localStorage.removeItem('userId'); // Suppression depuis localStorage
   };
 
   return (
-    <AuthContext.Provider value={{ authToken, login, logout }}>
+    <AuthContext.Provider value={{ authToken, userId, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
+
+export default AuthProvider;

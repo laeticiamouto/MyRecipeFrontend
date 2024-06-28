@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signup } from '../api';
+import { AuthContext } from '../components/AuthContext';
 import styled from 'styled-components';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -26,15 +27,16 @@ const SignUp = () => {
   const [errors, setErrors] = useState({ username: '', password: '' });
 
   const navigate = useNavigate();
+  const { setUserId } = useContext(AuthContext); // Access setUserId from AuthContext
 
-  // gestion des erreurs du formulaire
+  // Validation function for form fields
   const validate = () => {
     let formErrors = {};
 
     if (!username) {
       formErrors.username = "Le nom d'utilisateur est requis.";
-    } else if(username.length < 2){
-      formErrors.username = "Le mot de passe doit contenir au moins 2 caractères."
+    } else if (username.length < 2) {
+      formErrors.username = "Le nom d'utilisateur doit contenir au moins 2 caractères.";
     } else if (!/^[a-zA-Z]+$/.test(username)) {
       formErrors.username = "Le nom d'utilisateur doit contenir uniquement des lettres.";
     }
@@ -50,8 +52,9 @@ const SignUp = () => {
     setErrors(formErrors);
 
     return !formErrors.username && !formErrors.password;
-  }
+  };
 
+  // Handling form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -60,17 +63,18 @@ const SignUp = () => {
     }
 
     try {
-      await signup(username, password);
-      toast.success('Inscription reussie !');
+      const response = await signup(username, password);
+      setUserId(response.data.userId); // Store userId in AuthContext upon successful signup
+      toast.success('Inscription réussie !');
       navigate('/login');
     } catch (error) {
-      toast.error("Echec de l'inscription");
+      toast.error("Échec de l'inscription.");
     }
   };
 
   return (
     <FormContainer className="mt-5">
-      <h1 className="text-center">S'incrire</h1>
+      <h1 className="text-center">S'inscrire</h1>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label htmlFor="username" className="form-label">Nom d'utilisateur</label>
@@ -80,28 +84,26 @@ const SignUp = () => {
             id="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            placeholder="Username"
+            placeholder="Nom d'utilisateur"
           />
           {errors.username && <ErrorText>{errors.username}</ErrorText>}
         </div>
         <div className="mb-3">
           <label htmlFor="password" className="form-label">Mot de passe</label>
-          <input 
-            type="text"
+          <input
+            type="password" // Change type to password for secure input
             className="form-control mb-3"
             id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="password"
+            placeholder="Mot de passe"
           />
           {errors.password && <ErrorText>{errors.password}</ErrorText>}
         </div>
         <button type="submit" className="btn btn-primary w-100">S'inscrire</button>
-
       </form>
-      
     </FormContainer>
-  )
-}
+  );
+};
 
-export default SignUp
+export default SignUp;
