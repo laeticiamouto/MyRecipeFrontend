@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { updateRecipe } from '../api';
 import { AuthContext } from '../components/AuthContext';
 import styled from 'styled-components';
@@ -22,6 +22,7 @@ const ErrorText = styled.div`
 `;
 
 const EditRecipe = () => {
+  const { id } = useParams();
   const [name, setName] = useState('');
   const [ingredients, setIngredients] = useState('');
   const [instructions, setInstructions] = useState('');
@@ -54,7 +55,7 @@ const EditRecipe = () => {
     }
 
     try {
-      const response = await updateRecipe(authToken, { name, ingredients, instructions, category, imageUrl, userId });
+      const response = await updateRecipe(authToken, id, { name, ingredients, instructions, category, imageUrl, userId });
       if (response.status === 200) { // Assuming 200 OK is the success status
         toast.success('Recette modifiée avec succès!');
         setName('');

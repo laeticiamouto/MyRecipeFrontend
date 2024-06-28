@@ -57,6 +57,9 @@ const RecipeList = () => {
             <Link to={`/recipes/${recipe.id}`} className="btn btn-primary">
               Voir la recette
             </Link>
+            <Link to={`/edit-recipe/${recipe.id}`} className="btn btn-danger">
+              Editer la recette
+            </Link>
           </RecipeCard>
         ))
       )}

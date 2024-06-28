@@ -23,7 +23,7 @@ const RecipeDetail = () => {
   useEffect(() => {
     const getRecipe = async () => {
       try {
-        const response = await getRecipeById(id, authToken, userId); // pass userId
+        const response = await getRecipeById(authToken, id); // pass userId
         setRecipe(response.data);
         setLoading(false);
       } catch (error) {
